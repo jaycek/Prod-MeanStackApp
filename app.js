@@ -1,11 +1,11 @@
 const express = require("express");
 const ProductData = require("./src/model/ProductData");
 const bodyparser = require("body-parser");
-
+const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
 require("dotenv").config();
-const port = process.env.PORT;
+const port = process.env.PORT||8080;
 const path=require('path');
 const { MongoClient } = require('mongodb');
 
@@ -46,14 +46,29 @@ app.post('/insert',bodyparser.json(), function(req,res){
     product.save();
 })
 
-client.connect(err => {
-    if(err){ console.error(err); return false;}
-    // connection to mongo is successful, listen for requests
-    app.listen(port, () => {
-        console.log("listening for requests");
-    })
-});
+// client.connect(err => {
+//     if(err){ console.error(err); return false;}
+//     // connection to mongo is successful, listen for requests
+//     app.listen(port, () => {
+//         console.log("listening for requests");
+//     })
+// });
 
 // app.listen(port,()=>{
 //     console.log("Server started...")
 // });
+
+const connectDB = async () => {
+    try {
+      const conn = await mongoose.connect(process.env.MONGODB_URL);
+      console.log(`MongoDB Connected: `);
+    } catch (error) {
+      console.log(error);
+      process.exit(1);
+    }
+  }
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
+})
