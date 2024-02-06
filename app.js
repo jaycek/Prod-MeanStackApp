@@ -7,10 +7,11 @@ const cors = require('cors');
 require("dotenv").config();
 const port = process.env.PORT;
 const path=require('path');
-
-console.log(port)
+const { MongoClient } = require('mongodb');
 
 app.use(cors());
+const client = new MongoClient(process.env.MONGODB_URL);
+
 
 app.get('/',function(req,res){
     //res.send("API responds correctly.")
@@ -44,6 +45,15 @@ app.post('/insert',bodyparser.json(), function(req,res){
     var product = new ProductData(product);
     product.save();
 })
-app.listen(port,()=>{
-    console.log("Server started...")
+
+client.connect(err => {
+    if(err){ console.error(err); return false;}
+    // connection to mongo is successful, listen for requests
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
 });
+
+// app.listen(port,()=>{
+//     console.log("Server started...")
+// });
