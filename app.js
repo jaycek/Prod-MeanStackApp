@@ -6,13 +6,15 @@ const app = express();
 const cors = require('cors');
 require("dotenv").config();
 const port = process.env.PORT;
+const path=require('path');
 
 console.log(port)
 
 app.use(cors());
 
 app.get('/',function(req,res){
-    res.send("API responds correctly.")
+    //res.send("API responds correctly.")
+    res.sendFile(path.join(__dirname,'./Client/build/index.html'));
 })
 
 app.get('/products', function(req,res){
