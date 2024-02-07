@@ -12,13 +12,11 @@ const { MongoClient } = require('mongodb');
 app.use(cors());
 const client = new MongoClient(process.env.MONGODB_URL);
 
+app.use(express.static(path.join(__dirname,'./Client/build')));
 
-app.get('/',function(req,res){
-    //res.send("API responds correctly.")
-    res.sendFile(path.join(__dirname,'./Client/build/index.html'));
-})
 
-app.get('/products', function(req,res){
+
+app.get('/api/products', function(req,res){
 
     res.header("Access-Control-Allow-Origin","*");
     res.header('Access-Control-Allow-Methods:GET,POST,PUT,DELETE');
@@ -28,7 +26,7 @@ app.get('/products', function(req,res){
     })
 })
 
-app.post('/insert',bodyparser.json(), function(req,res){
+app.post('/api/insert',bodyparser.json(), function(req,res){
     res.header("Access-Control-Allow-Origin","*");
     res.header('Access-Control-Allow-Methods:GET,POST,PUT,DELETE');
    console.log(req.body);
@@ -45,7 +43,10 @@ app.post('/insert',bodyparser.json(), function(req,res){
     var product = new ProductData(product);
     product.save();
 })
-
+app.get('/*',function(req,res){
+    //res.send("API responds correctly.")
+    res.sendFile(path.join(__dirname,'./Client/build/index.html'));
+})
 // client.connect(err => {
 //     if(err){ console.error(err); return false;}
 //     // connection to mongo is successful, listen for requests
